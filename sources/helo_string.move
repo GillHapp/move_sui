@@ -1,44 +1,31 @@
-/*
-/// Module: helo_string
-module helo_string::helo_string;
-*/
-// Copyright (c) 2022, Sui Foundation
-// SPDX-License-Identifier: Apache-2.0
+module my_module::person_module {
+    use sui::object::UID;
+    use sui::tx_context::{Self, TxContext};
+    use std::string::String;
 
-/// A basic Hello World example for Sui Move, part of the Sui Move intro course:
-/// https://github.com/sui-foundation/sui-move-intro-course
-
-#[allow(duplicate_alias)]
-// #[allow(unused_variables)]
-
-module helo_string::hello_world {
-
-
-    use std::string;
-    use sui::object::{Self, UID};
-    use sui::transfer;
-    use sui::tx_context::{TxContext, sender};
-
-    /// An object that contains an arbitrary string
-    #[allow(unused_use)]
-   public struct HelloWorldObject has key, store {
+    /// Person object
+    public struct Person has key {
         id: UID,
-        /// A string contained in the object
-        text: string::String
+        name: String,
+        city: String,
+        age: u64,
+        date_of_birth: String,
     }
 
-    #[allow(unused_use)]
-    public entry fun mint(ctx: &mut TxContext) {
-        let object = HelloWorldObject {
+    /// Public function to create a new Person object
+    public fun create_person(
+        name: String,
+        city: String,
+        age: u64,
+        date_of_birth: String,
+        ctx: &mut TxContext
+    ): Person {
+        Person {
             id: object::new(ctx),
-            text: string::utf8(b"Hello World!")
-        };
-        transfer::public_transfer(object, sender(ctx));
+            name,
+            city,
+            age,
+            date_of_birth,
+        }
     }
-
 }
-
-// For Move coding conventions, see
-// https://docs.sui.io/concepts/sui-move-concepts/conventions
-
-

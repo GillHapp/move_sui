@@ -1,31 +1,29 @@
-module my_module::person_module {
-    use sui::object::UID;
+module my_module::animal {
+    use sui::object::{Self, UID};
     use sui::tx_context::{Self, TxContext};
-    use std::string::String;
+    use sui::transfer;
+    use std::string::{Self, String};
 
-    /// Person object
-    public struct Person has key {
+    // 👤 Object definition
+    public struct AnimeObject has key {
         id: UID,
         name: String,
-        city: String,
-        age: u64,
-        date_of_birth: String,
+        no_of_legs: u8,
+        favorite_food: String,
     }
 
-    /// Public function to create a new Person object
-    public fun create_person(
-        name: String,
-        city: String,
-        age: u64,
-        date_of_birth: String,
-        ctx: &mut TxContext
-    ): Person {
-        Person {
+    // 🧾 Witness struct must match module name (uppercase)
+   public struct ANIMAL has drop {}
+
+    // 🛠️ Constructor (only callable once after publish)
+    fun init(_witness: ANIMAL, ctx: &mut TxContext) {
+        let anime = AnimeObject {
             id: object::new(ctx),
-            name,
-            city,
-            age,
-            date_of_birth,
-        }
+            name: string::utf8(b"Dog"),
+            no_of_legs: 4,
+            favorite_food: string::utf8(b"Bone"),
+        };
+        let sender = tx_context::sender(ctx);
+        transfer::transfer(anime, sender);
     }
 }
